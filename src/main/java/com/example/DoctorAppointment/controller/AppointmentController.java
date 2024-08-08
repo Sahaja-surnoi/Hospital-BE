@@ -20,7 +20,7 @@ import com.example.DoctorAppointment.repo.DoctorRepository;
 
 
 @RestController
-@RequestMapping("/api/HospitalAppointment/")
+@RequestMapping("/api/HospitalAppointment")
 public class AppointmentController {
 	
 	
