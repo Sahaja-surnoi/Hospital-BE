@@ -20,6 +20,8 @@ public class DoctorAppointment {
 	private String appointmentTime;
 	private boolean isFirstVisit;
 	private String comment;
+
+
 	public long getId() {
 		return id;
 	}

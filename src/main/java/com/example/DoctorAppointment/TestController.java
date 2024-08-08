@@ -1,6 +1,9 @@
 package com.example.DoctorAppointment;
+import com.example.DoctorAppointment.model.DoctorAppointment;
+import com.example.DoctorAppointment.repo.DoctorRepository;
 import io.micrometer.core.instrument.*;
-        import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -15,6 +18,12 @@ public class TestController {
     private Counter visitCounter;
     private Timer timer;
     private DistributionSummary httpRequestsDurationHistogram;
+    private final DistributionSummary appointmentListSummary;
+
+    @Autowired
+    private DoctorRepository doctorRepository;
+
+
 
     private List<Integer> queue = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5));
 
@@ -36,6 +45,10 @@ public class TestController {
         httpRequestsDurationHistogram = DistributionSummary.builder("http_request_histogram_example")
                 .description("Histogram example")
                 .publishPercentileHistogram()
+                .register(registry);
+
+        appointmentListSummary = DistributionSummary.builder("appointment_list_size")
+                .description("Number of appointments")
                 .register(registry);
 
     }
@@ -84,5 +97,14 @@ public class TestController {
     public int getRandomNumber(int min, int max) {
         Random random = new Random();
         return random.nextInt(max - min) + min;
+    }
+
+    @GetMapping("/getAppointments")
+    public String getAppointments() {
+        List<DoctorAppointment> appointments = doctorRepository.findAll();
+        // Record the size of the list in the DistributionSummary
+        appointmentListSummary.record(appointments.size());
+
+        return "Number of appointments: " + appointments.size();
     }
 }
