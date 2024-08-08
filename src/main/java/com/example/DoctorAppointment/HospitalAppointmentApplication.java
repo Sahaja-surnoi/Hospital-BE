@@ -16,17 +16,14 @@ public class HospitalAppointmentApplication {
 	@Bean
 	public WebMvcConfigurer mvcConfigurer() {
 		return new WebMvcConfigurer() {
-
+			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-				.allowedOrigins("http://hospital-fe.s3-website-ap-southeast-1.amazonaws.com")
-				.allowedMethods("GET", "POST", "PUT", "DELETE")
-				.allowedHeaders("*");
-
-				
+						.allowedOrigins("http://hospital-fe.s3-website-ap-southeast-1.amazonaws.com") // Frontend URL
+						.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Ensure OPTIONS is included for preflight requests
+						.allowedHeaders("*") // Allows all headers
+						.allowCredentials(true); // Allows credentials if needed
 			}
-
 		};
 	}
-
 }

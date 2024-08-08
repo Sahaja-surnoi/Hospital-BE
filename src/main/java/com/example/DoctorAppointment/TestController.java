@@ -5,6 +5,9 @@ import io.micrometer.core.instrument.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
