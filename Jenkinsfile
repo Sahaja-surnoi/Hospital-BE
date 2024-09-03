@@ -1,43 +1,36 @@
 pipeline {
-    agent none  // No default agent, each stage will specify its own
+    agent none 
 
     tools {
-        maven 'maven'  // Ensure this matches the name configured in Global Tool Configuration
+        maven 'maven' 
+    }
+
+    environment {
+         NODE_LABEL = "${env.BRANCH_NAME == 'dev' ? 'dev-node' : (env.BRANCH_NAME == 'test' ? 'test-node' : (env.BRANCH_NAME == 'UAT' ? 'UAT-node' : 'prod-node'))}"
     }
 
     stages {
         stage('Check out code from Git') {
             agent {
-                label "${env.BRANCH_NAME == 'Prod' ? 'prod-node' : (env.BRANCH_NAME == 'Test' ? 'test-node' : 'dev-node')}"
+                label "${env.NODE_LABEL}" 
             }
             steps {
                 script {
-                    // Checkout the branch from GitHub
-                    checkout([$class: 'GitSCM',
-                              branches: [[name: "${env.BRANCH_NAME}"]],
-                              doGenerateSubmoduleConfigurations: false,
-                              extensions: [],
-                              userRemoteConfigs: [[url: 'https://github.com/Sahaja-surnoi/Hospital-BE.git', credentialsId: 'Git-Access']]
-                             ])
-                    // Stash the source code for later stages
+                    checkout scm
                     stash name: 'source-code1', includes: '**/*'
                 }
             }
         }
         stage('Build artifact') {
             agent {
-                label "${env.BRANCH_NAME == 'Prod' ? 'prod-node' : (env.BRANCH_NAME == 'Test' ? 'test-node' : 'dev-node')}"
+                label "${env.NODE_LABEL}"
             }
             steps {
                 script {
-                    // Debugging output
-                    echo "Building on node: ${env.NODE_NAME}"
-                    echo "Branch Name: ${env.BRANCH_NAME}"
-                }
-                unstash 'source-code1'
-                // Ensure Maven is in the path
-                withMaven(maven: 'maven') {
-                    sh 'mvn clean package'
+                    unstash 'source-code1'
+                    withMaven(maven: 'maven') {
+                        sh 'mvn clean package'
+                    }
                 }
             }
         }
