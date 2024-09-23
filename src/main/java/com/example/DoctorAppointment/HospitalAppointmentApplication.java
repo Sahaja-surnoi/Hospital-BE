@@ -19,7 +19,7 @@ public class HospitalAppointmentApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-						.allowedOrigins("http://54.179.185.117") // Frontend URL
+						.allowedOrigins("http://13.229.133.101") // Frontend URL
 						.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Ensure OPTIONS is included for preflight requests
 						.allowedHeaders("*") // Allows all headers
 						.allowCredentials(true); // Allows credentials if needed
